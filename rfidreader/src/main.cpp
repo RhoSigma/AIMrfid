@@ -1,12 +1,8 @@
 /*
  * ----------------------------------------------------------------------
- * Example program showing how to read new NUID from a PICC to serial.
- * ----------------------------------------------------------------------
- * https://circuits4you.com
- * 
  * RC522 Interfacing with NodeMCU
  * 
- * Typical pin layout used:
+ * Pin layout used:
  * ----------------------------------------------------------
  *             MFRC522        Node              Colour
  *             Reader/PCD     MCU      
@@ -22,22 +18,8 @@
  * Status LED  VCC (330 ohm)  D4                Grey
  */
 
-#include <Arduino.h>
-#include <EEPROM.h>
-#include <ESPUI.h>
+#include <main.h>
 
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-#include <wifiInterface/wifiInterface.h>
-
-#include <SPI.h>
-#include <MFRC522.h>
-
-#include <pins.h>
-#include <config.h>
-
-#include <blinkPatterns.h>
-#include <blink/blink.h>
  
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 
@@ -46,34 +28,6 @@ MFRC522::MIFARE_Key key;
 // Init array that will store new NUID 
 byte nuidPICC[4];
 
-
-/**
- * Helper routine to dump a byte array as hex values to Serial. 
- */
-void printHex(byte *buffer, byte bufferSize) {
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], HEX);
-  }
-}
-
-/**
- * Helper routine to dump a byte array as dec values to Serial.
- */
-void printDec(byte *buffer, byte bufferSize) {
-  for (byte i = 0; i < bufferSize; i++) {
-    Serial.print(buffer[i] < 0x10 ? " 0" : " ");
-    Serial.print(buffer[i], DEC);
-  }
-}
-
-
-
-
-
-
-
-bool serialConnected;
 
 
 void setup() { 
@@ -104,7 +58,14 @@ void setup() {
   setUpUI();
 }
  
+uint32_t lastUiUpdate;
 void loop() {
+
+  if (millis() - lastUiUpdate > UI_UPDATE_MS)
+  {
+    lastUiUpdate = millis();
+    ESPUI.updateLabel(mainLabel, String(lastUiUpdate));
+  }
 
   // Look for new cards
   if ( ! rfid.PICC_IsNewCardPresent())
@@ -152,5 +113,8 @@ void loop() {
 
   // Stop encryption on PCD
   rfid.PCD_StopCrypto1();
+
+  MDNS.update();
+
 }
 

@@ -6,7 +6,11 @@
 
 //UI handles
 uint16_t wifi_ssid_text, wifi_pass_text;
-uint16_t mainLabel, mainSwitcher, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
+
+uint16_t mainLabel;
+
+uint16_t mainSwitcher, mainSlider, mainText, mainNumber, mainScrambleButton, mainTime;
+
 uint16_t styleButton, styleLabel, styleSwitcher, styleSlider, styleButton2, styleLabel2, styleSlider2;
 uint16_t graph;
 volatile bool updates = false;
