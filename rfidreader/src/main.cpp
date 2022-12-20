@@ -8,18 +8,18 @@
  * 
  * Typical pin layout used:
  * ----------------------------------------------------------
- *             MFRC522      Node                Colour
- *             Reader/PCD   MCU      
- * Signal      Pin          Pin      
+ *             MFRC522        Node              Colour
+ *             Reader/PCD     MCU      
+ * Signal      Pin            Pin      
  * ---------------------------------------------------------
- * RST/Reset   RST          D1  (GPIO5)       Brown
- * SPI SS      SDA(SS)      D2  (GPIO4)       Yellow
- * SPI MOSI    MOSI         D7  (GPIO13)      Blue
- * SPI MISO    MISO         D6  (GPIO12)      Purple
- * SPI SCK     SCK          D5  (GPIO14)      Orange
- * 3.3V        3.3V         3.3V (NEAR USB!)  Red
- * GND         GND          GND  (NEAR USB!)  Black
- * Status LED  --           D4                Grey (330 ohm)
+ * RST/Reset   RST            D1  (GPIO5)       Brown
+ * SPI SS      SDA(SS)        D2  (GPIO4)       Yellow
+ * SPI MOSI    MOSI           D7  (GPIO13)      Blue
+ * SPI MISO    MISO           D6  (GPIO12)      Purple
+ * SPI SCK     SCK            D5  (GPIO14)      Orange
+ * 3.3V        3.3V           3.3V (NEAR USB!)  Red
+ * GND         GND            GND  (NEAR USB!)  Black
+ * Status LED  VCC (330 ohm)  D4                Grey
  */
 
 #include <Arduino.h>
@@ -35,6 +35,9 @@
 
 #include <pins.h>
 #include <config.h>
+
+#include <blinkPatterns.h>
+#include <blink/blink.h>
  
 MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
 
@@ -64,51 +67,11 @@ void printDec(byte *buffer, byte bufferSize) {
   }
 }
 
-//                                    .             .             .               -             -             .             .             .        end
-uint32_t sos_blink[18] = {30000, 50000, 30000, 50000, 30000, 100000, 100000, 50000, 100000, 50000, 30000, 50000, 30000, 50000, 30000, 600000, 0};
-uint32_t slow_blink[3] = {60000, 600000, 0}; // slow, looks like 'ready' or 'standby'
 
 
 
-// 100000 medium-slow flash, looks like error
-// 60000 medium flash
-// 30000 fast flash
-// 15000 data blink, very fast
-
-// 600000 off, 60000 on = ready? USB connection maybe
 
 
-uint8_t blinkStep;
-uint32_t *blinkPatternPtr;
-uint32_t *nextBlinkPatternPtr;
-
-void setBlinkState(uint32_t *setBlink, uint32_t *nextBlink)
-{
-  blinkStep = 0;
-  blinkPatternPtr = setBlink;
-
-  if (nextBlink == NULL)
-  {
-    nextBlinkPatternPtr = blinkPatternPtr;
-    return;
-  }
-  nextBlinkPatternPtr = nextBlink;
-}
-
-void IRAM_ATTR onTimerISR(){ // LED flash
-
-  digitalWrite(LED_PIN, !(blinkStep % 2 == 0)); // invert, led is on is pulled *low*
-
-  timer1_write(blinkPatternPtr[blinkStep]);
-
-  blinkStep++;
-
-  if (blinkPatternPtr[blinkStep] == 0)
-  {
-    blinkStep = 0;
-    blinkPatternPtr = nextBlinkPatternPtr;
-  }
-}
 
 bool serialConnected;
 
@@ -129,7 +92,7 @@ void setup() {
   // config LED blink pattern
   setBlinkState(sos_blink, NULL);
 
-  timer1_attachInterrupt(onTimerISR); // config timer
+  timer1_attachInterrupt(blinkISR); // config timer
   timer1_enable(TIM_DIV256, TIM_EDGE, TIM_SINGLE);
   timer1_write(6000); //120000 us
 
