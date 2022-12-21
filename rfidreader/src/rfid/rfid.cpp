@@ -1,8 +1,14 @@
 #include <MFRC522.h>
 #include <pins.h>
 #include <config.h>
+// #include <../buildID.h>
 
 // forward declarations
+extern bool debugVerbose;
+
+extern const char* BUILD_TIME;
+extern const char* BUILT_BY;
+
 extern void printHex(byte *buffer, byte bufferSize);
 extern void printDec(byte *buffer, byte bufferSize);
 extern void setBlinkState(uint32_t *setBlink, uint32_t *nextBlink);
@@ -18,10 +24,16 @@ byte lastUID[4];
 uint64_t lastRead;
 
 
+// forward declare special modes
+void enableDebugMode();
+byte debugModeUID[4] {0xC2, 0x69, 0x0b, 0x1C};
+
+
 // called on debounced card read
 void onValidRead()
 {
-  Serial.println(F("Valid card read."));
+  if (debugVerbose)
+    Serial.println(F("Valid card read."));
 
   setBlinkState(one_blink_long, NULL); // indicate card read, return to last blink pattern
 
@@ -41,13 +53,27 @@ void onValidRead()
 
   // -----------------------------------------------------------------
 
+
+  // Special mode handling
+
+  if 
+  (
+    rfid.uid.uidByte[0] == debugModeUID[0] &&
+    rfid.uid.uidByte[1] == debugModeUID[1] &&
+    rfid.uid.uidByte[2] == debugModeUID[2] &&
+    rfid.uid.uidByte[3] == debugModeUID[3] 
+  ) 
+  {
+    enableDebugMode();
+  }
 }
 
 // convenience function, called on debounce rejection
 void onRejectDebounce()
 {
   setBlinkState(five_blinks, NULL);
-  Serial.println(F("Rejected card read bounce."));
+  if (debugVerbose)
+    Serial.println(F("Rejected card read bounce."));
 }
 
 void initRFID()
@@ -83,7 +109,6 @@ bool isReadDebounced()
     {
       // card has already been read within debounce threshold
       lastRead = millis();
-      onRejectDebounce();
       return false;
     }
   }
@@ -104,11 +129,11 @@ void serviceRFID()
   }
 
   // Look for new cards
-  if ( ! rfid.PICC_IsNewCardPresent())
+  if (!rfid.PICC_IsNewCardPresent())
     return;
 
   // Verify if the current UID has been read
-  if ( ! rfid.PICC_ReadCardSerial())
+  if (!rfid.PICC_ReadCardSerial())
     return;
 
 
@@ -119,14 +144,14 @@ void serviceRFID()
 
   // Check is the PICC of Classic MIFARE type
   if (!isMIFARE(rfid.PICC_GetType(rfid.uid.sak)))
-  {
     return; // not miFARE
-  }
+
 
   if (isReadDebounced())
   {
-    // valid card read
     onValidRead();
+  } else {
+    onRejectDebounce();
   }
 
   // Halt PICC
@@ -135,3 +160,18 @@ void serviceRFID()
   // Stop encryption on PCD
   rfid.PCD_StopCrypto1();
 }
+
+// -----------------------------------------------------------------
+// Special modes
+
+void enableDebugMode()
+{
+  debugVerbose = true;
+  Serial.println(F("Enabled debug mode."));
+  Serial.println("MCU_TYPE: " + String(MCU_TYPE));
+  Serial.println("HOSTNAME: " + String(HOSTNAME));
+  Serial.println("BUILD_TIME: " + String(BUILD_TIME));
+  Serial.println("BUILT_BY: " + String(BUILT_BY));
+}
+
+// -----------------------------------------------------------------

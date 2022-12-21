@@ -66,6 +66,5 @@ void loop() {
   serviceRFID();
 
   MDNS.update();
-
 }
 

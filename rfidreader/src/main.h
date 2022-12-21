@@ -16,3 +16,7 @@
 #include <blinkPatterns.h>
 #include <blink/blink.h>
 #include <utils/utils.h>
+
+#include <buildID.h>
+
+bool debugVerbose;
