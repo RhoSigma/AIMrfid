@@ -6,6 +6,8 @@
 
     #define MCU_TYPE "LOLin ESP8266 NodeMCU v3.0"
 
+    #define CARD_DEBOUNCE_TIMEOUT_MS 2000
+
     #define SLOW_BOOT 0
     #define HOSTNAME "AIMrfid"
     #define FORCE_USE_HOTSPOT 1
