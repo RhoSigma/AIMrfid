@@ -1,4 +1,13 @@
 #include <Arduino.h>
+#include <config.h>
+
+void printSelfInfo()
+{
+  Serial.println(MCU_TYPE);
+  Serial.println("Firmware build: ");
+}
+
+
 
 /**
  * Helper routine to dump a byte array as hex values to Serial. 

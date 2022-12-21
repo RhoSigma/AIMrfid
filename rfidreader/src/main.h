@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "Arduino.h"
 #include <EEPROM.h>
 #include <ESPUI.h>
 
@@ -8,11 +8,11 @@
 #include <wifiInterface/webui.h>
 
 #include <SPI.h>
-#include <MFRC522.h>
+#include <rfid/rfid.h>
 
 #include <pins.h>
 #include <config.h>
 
 #include <blinkPatterns.h>
 #include <blink/blink.h>
-#include <utils.h>
+#include <utils/utils.h>

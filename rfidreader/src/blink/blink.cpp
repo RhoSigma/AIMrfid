@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include <pins.h>
 #include <blink/blink.h>
 
@@ -12,12 +11,17 @@ void setBlinkState(uint32_t *setBlink, uint32_t *nextBlink)
   blinkStep = 0;
   blinkPatternPtr = setBlink;
 
-  if (nextBlink == NULL)
+  if (nextBlink != NULL)
+  {
+    nextBlinkPatternPtr = nextBlink;
+  }
+
+  if (nextBlinkPatternPtr == NULL)
   {
     nextBlinkPatternPtr = blinkPatternPtr;
-    return;
   }
-  nextBlinkPatternPtr = nextBlink;
+
+  blinkISR(); // call to immediately start blink routine
 }
 
 void IRAM_ATTR blinkISR(){ // LED flash
