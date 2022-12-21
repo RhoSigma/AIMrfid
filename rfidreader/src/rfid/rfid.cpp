@@ -28,14 +28,14 @@ void onValidRead()
   // Store current UID into lastUID array
   for (byte i = 0; i < 4; i++) { lastUID[i] = rfid.uid.uidByte[i]; }
 
+  // Output the UID for python client pickup
   // -----------------------------------------------------------------
-  // @Owen: take it from here
 
-  Serial.println(F("The NUID tag is:"));
-  Serial.print(F("In hex: "));
+  Serial.print(F("UID.HEX;"));
   printHex(rfid.uid.uidByte, rfid.uid.size);
   Serial.println();
-  Serial.print(F("In dec: "));
+
+  Serial.print(F("UID.DEC;"));
   printDec(rfid.uid.uidByte, rfid.uid.size);
   Serial.println();
 
