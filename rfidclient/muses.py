@@ -13,6 +13,10 @@ for port, desc, hwid in sorted(ports):
     print("{}: {} [{}]".format(port, desc, hwid))
     if "USB to UART Bridge Controller" in desc :
         serial_port = port
+        break
+    if "USB2.0-Serial" in desc:
+        serial_port = port 
+        break       
 
 if len(serial_port) < 2:
     print("No Device Found")
@@ -27,15 +31,12 @@ ser = serial.Serial(serial_port, 9600)
 async def processData(data):
     val_pair = str(data).split(";")
     if len(val_pair) > 1:
-        if str(val_pair[0]).__contains__("UID"):
-            uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').upper()
-            print(uid)
+        if str(val_pair[0]).__contains__("UID.HEX"):
+            uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').replace("\\r",'\r').lower()
             for c in uid:
                 pyautogui.press(c)
-            print('\n\n')
 
 # Continuously read serial data and emulate keyboard input
 while True:
     data = ser.readline()
-    #print(data)
     asyncio.run(processData(data))
