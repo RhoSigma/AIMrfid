@@ -41,4 +41,7 @@ while True:
         if len(serial_port) > 2:
             print("{}".format(serial_port))
             found_port = True
-            ser = serial.Serial(serial_port, 9600)
+            try:
+                ser = serial.Serial(serial_port, 9600)
+            except:
+                found_port = False
