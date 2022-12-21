@@ -8,6 +8,7 @@ extern bool debugVerbose;
 
 extern const char* BUILD_TIME;
 extern const char* BUILT_BY;
+extern const char* COMMIT_HASH;
 
 extern void printHex(byte *buffer, byte bufferSize);
 extern void printDec(byte *buffer, byte bufferSize);
@@ -172,6 +173,7 @@ void enableDebugMode()
   Serial.println("HOSTNAME: " + String(HOSTNAME));
   Serial.println("BUILD_TIME: " + String(BUILD_TIME));
   Serial.println("BUILT_BY: " + String(BUILT_BY));
+  Serial.println("COMMIT_HASH: " + String(COMMIT_HASH));
 }
 
 // -----------------------------------------------------------------
