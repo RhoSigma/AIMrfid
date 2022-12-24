@@ -30,11 +30,11 @@
  * ---------------------------------------------------------
  * SPI MOSI    MOSI           IO23              Blue
  * RST/Reset   RST            IO22              Brown
- * Status LED  VCC (330 ohm)  IO21              Grey
+ * Status LED  VCC (330 ohm)  IO5              Grey
  * GND         GND            GND               Black
  * SPI MISO    MISO           IO19              Purple
  * SPI SCK     SCK            IO18              Orange
- * SPI SS      SDA(SS)        IO5               Yellow
+ * SPI SS      SDA(SS)        IO21               Yellow
  * 3.3V        3.3V           3.3V              Red
  */
 
@@ -54,9 +54,9 @@ void setup() {
   SPI.begin(); // Init SPI bus
   initRFID();
 
-
+  Serial.println(LED_PIN);
   pinMode(LED_PIN, OUTPUT); // config LED pin
-  digitalWrite(LED_PIN, LOW);
+  digitalWrite(LED_PIN, HIGH);
 
   initBlink();
 
