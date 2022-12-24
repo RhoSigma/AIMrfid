@@ -1,7 +1,9 @@
 Import("env")
+import time
 import getpass
 from datetime import datetime
 import subprocess
+import serial
 
 print("Setting buildID")
 

@@ -3,8 +3,17 @@
 
     #include "Arduino.h"
 
-    constexpr uint8_t LED_PIN = LED_BUILTIN;
+    #ifdef nodemcuv2
+        constexpr uint8_t LED_PIN = LED_BUILTIN;
+        constexpr uint8_t RST_PIN = 5;
+        constexpr uint8_t SS_PIN = 4;
+    #endif
 
-    constexpr uint8_t RST_PIN = 5;
-    constexpr uint8_t SS_PIN = 4;
+    #ifdef az_delivery_devkit_v4
+        constexpr uint8_t LED_PIN = 21;
+        constexpr uint8_t RST_PIN = 22;
+        constexpr uint8_t SS_PIN = 5;
+    #endif
+
+
 #endif

@@ -18,6 +18,26 @@
  * Status LED  VCC (330 ohm)  D4                Grey
  */
 
+/*
+ * ----------------------------------------------------------------------
+ * RC522 Interfacing with ESP32
+ * 
+ * Pin layout used:
+ * ----------------------------------------------------------
+ *             MFRC522        Node              Colour
+ *             Reader/PCD     MCU      
+ * Signal      Pin            Pin      
+ * ---------------------------------------------------------
+ * SPI MOSI    MOSI           IO23              Blue
+ * RST/Reset   RST            IO22              Brown
+ * Status LED  VCC (330 ohm)  IO21              Grey
+ * GND         GND            GND               Black
+ * SPI MISO    MISO           IO19              Purple
+ * SPI SCK     SCK            IO18              Orange
+ * SPI SS      SDA(SS)        IO5               Yellow
+ * 3.3V        3.3V           3.3V              Red
+ */
+
 #include <main.h>
 
 extern MFRC522::MIFARE_Key RFID_KEY;
@@ -29,7 +49,6 @@ void setup() {
   while(!Serial);
 
   delay(500); // wait until serial ready
-  printSelfInfo();
 
 
   SPI.begin(); // Init SPI bus
@@ -39,32 +58,41 @@ void setup() {
   pinMode(LED_PIN, OUTPUT); // config LED pin
   digitalWrite(LED_PIN, LOW);
 
+  initBlink();
+
   // config LED blink pattern
   setBlinkState(slow_blink, slow_blink);
 
-  timer1_attachInterrupt(blinkISR); // config timer
-  timer1_enable(TIM_DIV256, TIM_EDGE, TIM_SINGLE);
-  timer1_write(6000); //120000 us
+
 
   Serial.println(F("This code scan the MIFARE Classsic NUID."));
   Serial.print(F("Using the following key:"));
   printHex(RFID_KEY.keyByte, MFRC522::MF_KEY_SIZE);
 
-  connectWifi();
-  setUpUI();
+  #ifdef nodemcuv2
+    connectWifi();
+    setUpUI();
+  #endif
 }
  
 uint32_t lastUiUpdate;
 void loop() {
 
-  if (millis() - lastUiUpdate > UI_UPDATE_MS)
-  {
-    lastUiUpdate = millis();
-    ESPUI.updateLabel(mainLabel, String(lastUiUpdate));
-  }
+
+  #ifdef nodemcuv2
+    if (millis() - lastUiUpdate > UI_UPDATE_MS)
+    {
+      lastUiUpdate = millis();
+      ESPUI.updateLabel(mainLabel, String(lastUiUpdate));
+    }
+  #endif
+
+  serviceSerial();
 
   serviceRFID();
 
-  MDNS.update();
+  #ifdef nodemcuv2
+    MDNS.update();
+  #endif
 }
 

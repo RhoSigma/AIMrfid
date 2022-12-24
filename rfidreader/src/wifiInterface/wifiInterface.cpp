@@ -1,8 +1,11 @@
-#include <ESPUI.h>
 #include <config.h>
 #include <EEPROM.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
+
+#ifdef nodemcuv2
+	#include <ESPUI.h>
+
+	#include <ESP8266WiFi.h>
+	#include <ESP8266mDNS.h>
 
 //UI handles
 uint16_t wifi_ssid_text, wifi_pass_text;
@@ -436,3 +439,4 @@ void connectWifi() {
 		} while(connect_timeout);
 	}
 }
+#endif
