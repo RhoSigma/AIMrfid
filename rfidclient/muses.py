@@ -10,11 +10,18 @@ found_port = False
 def resolvePort():
     ports = findserial.getPorts()
     for port, desc, hwid in sorted(ports):
+        
         #print("{}: {} [{}]".format(port, desc, hwid))
+        
         if "USB to UART Bridge Controller" in desc :
             return port
+        
         if "USB2.0-Serial" in desc:
             return port
+        
+        if "USB Serial" in desc:
+            return port
+    
     return ""
 
 async def processData(data):
