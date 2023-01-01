@@ -3,6 +3,7 @@ import asyncio
 import serial
 import pyautogui
 import findserial
+import pyperclip
 
 serial_port = ""
 found_port = False
@@ -30,6 +31,7 @@ async def processData(data):
     if len(val_pair) > 1:
         if str(val_pair[0]).__contains__("UID.HEX"):
             uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').replace("\\r",'\r').lower()
+            pyperclip.copy(uid)
             for c in uid:
                 pyautogui.press(c)
 
