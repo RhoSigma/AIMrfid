@@ -3,7 +3,6 @@ import asyncio
 import serial
 import pyautogui
 import findserial
-import pyperclip
 import playsound
 from sys import platform
 
@@ -12,7 +11,10 @@ found_port = False
 
 is_mac = platform == "darwin"
 
-pyperclip.copy('The text to be copied to the clipboard.')
+if is_mac:
+    import pyperclip as clipper
+else:
+    import pyclip as clipper
 
 def resolvePort():
     ports = findserial.getPorts()
@@ -38,7 +40,7 @@ async def processData(data):
         if str(val_pair[0]).__contains__("UID.HEX"):
             uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').replace("\\r",'\r').lower()
             playsound.playsound('beep.wav', False)
-            pyperclip.copy(uid)
+            clipper.copy(uid)
             if is_mac:
                 power_key = "command"
             else:
