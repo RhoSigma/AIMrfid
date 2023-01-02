@@ -46,7 +46,7 @@ async def processData(data):
             if is_mac:
                 power_key = "command"
             else:
-                power_key = "control"
+                power_key = "ctrl"
             pyautogui.keyDown(power_key)
             pyautogui.press('v')
             pyautogui.keyUp(power_key)
