@@ -55,6 +55,9 @@ async def processData(data):
 # Continuously read serial data and emulate keyboard input
 while True:
     if found_port:
+        # Play sound twice to signify that the reader is good, and load in memory
+        playsound.playsound(dir_path + '/beep.wav', False)
+        playsound.playsound(dir_path + '/beep.wav', False)
         # Set the serial port and baud rate
         try:
             data = ser.readline()
