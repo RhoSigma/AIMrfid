@@ -1,2 +1,4 @@
 pyserial
 pyautogui
+pyperclip
+playsound

@@ -3,9 +3,16 @@ import asyncio
 import serial
 import pyautogui
 import findserial
+import pyperclip
+import playsound
+from sys import platform
 
 serial_port = ""
 found_port = False
+
+is_mac = platform == "darwin"
+
+pyperclip.copy('The text to be copied to the clipboard.')
 
 def resolvePort():
     ports = findserial.getPorts()
@@ -25,13 +32,21 @@ def resolvePort():
     return ""
 
 async def processData(data):
-    print(data)
+    #print(data)
     val_pair = str(data).split(";")
     if len(val_pair) > 1:
         if str(val_pair[0]).__contains__("UID.HEX"):
             uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').replace("\\r",'\r').lower()
-            for c in uid:
-                pyautogui.press(c)
+            playsound.playsound('beep.wav', False)
+            pyperclip.copy(uid)
+            if is_mac:
+                power_key = "command"
+            else:
+                power_key = "control"
+            pyautogui.keyDown(power_key)
+            pyautogui.press('v')
+            pyautogui.keyUp(power_key)
+            pyautogui.press('\r')
 
 # Continuously read serial data and emulate keyboard input
 while True:
