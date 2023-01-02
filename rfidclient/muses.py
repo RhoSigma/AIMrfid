@@ -59,9 +59,10 @@ while True:
         try:
             data = ser.readline()
             asyncio.run(processData(data))
-        except:
+        except Exception as e:
             found_port = False
             serial_port = ""
+            print(e)
     else:
         serial_port = resolvePort()
         if len(serial_port) > 2:
