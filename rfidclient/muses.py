@@ -4,12 +4,14 @@ import serial
 import pyautogui
 import findserial
 import playsound
+import os
 from sys import platform
 
 serial_port = ""
 found_port = False
 
 is_mac = platform == "darwin"
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 if is_mac:
     import pyperclip as clipper
@@ -39,7 +41,7 @@ async def processData(data):
     if len(val_pair) > 1:
         if str(val_pair[0]).__contains__("UID.HEX"):
             uid = str(val_pair[1]).replace("\\n",'').replace(' ','').replace('\'','').replace("\\r",'\r').lower()
-            playsound.playsound('beep.wav', False)
+            playsound.playsound(dir_path + '/beep.wav', False)
             clipper.copy(uid)
             if is_mac:
                 power_key = "command"
@@ -57,9 +59,10 @@ while True:
         try:
             data = ser.readline()
             asyncio.run(processData(data))
-        except:
+        except Exception as e:
             found_port = False
             serial_port = ""
+            print(e)
     else:
         serial_port = resolvePort()
         if len(serial_port) > 2:
