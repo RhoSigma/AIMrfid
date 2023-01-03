@@ -54,13 +54,14 @@ async def processData(data):
             pyautogui.keyUp(power_key)
             pyautogui.press('\r')
 
+# Play sound twice to signify that the reader is good, and load in memory
+playsound.playsound(dir_path + '/beep.wav', True)
+time.sleep(0.2)
+playsound.playsound(dir_path + '/beep.wav', True)
+
 # Continuously read serial data and emulate keyboard input
 while True:
     if found_port:
-        # Play sound twice to signify that the reader is good, and load in memory
-        playsound.playsound(dir_path + '/beep.wav', True)
-        time.sleep(0.2)
-        playsound.playsound(dir_path + '/beep.wav', True)
         # Set the serial port and baud rate
         try:
             data = ser.readline()
