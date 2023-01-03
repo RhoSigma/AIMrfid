@@ -5,6 +5,8 @@ import pyautogui
 import findserial
 import playsound
 import os
+import time
+
 from sys import platform
 
 serial_port = ""
@@ -56,8 +58,9 @@ async def processData(data):
 while True:
     if found_port:
         # Play sound twice to signify that the reader is good, and load in memory
-        playsound.playsound(dir_path + '/beep.wav', False)
-        playsound.playsound(dir_path + '/beep.wav', False)
+        playsound.playsound(dir_path + '/beep.wav', True)
+        time.sleep(0.2)
+        playsound.playsound(dir_path + '/beep.wav', True)
         # Set the serial port and baud rate
         try:
             data = ser.readline()
