@@ -49,6 +49,8 @@ async def processData(data):
                 power_key = "command"
             else:
                 power_key = "ctrl"
+            'backspace'
+            pyautogui.keyDown('backspace')
             pyautogui.keyDown(power_key)
             pyautogui.press('v')
             pyautogui.keyUp(power_key)
