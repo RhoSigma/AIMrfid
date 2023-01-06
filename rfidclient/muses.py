@@ -38,7 +38,7 @@ def resolvePort():
     return ""
 
 async def processData(data):
-    #print(data)
+    print(data)
     val_pair = str(data).split(";")
     if len(val_pair) > 1:
         if str(val_pair[0]).__contains__("UID.HEX"):
