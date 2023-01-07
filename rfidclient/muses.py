@@ -49,15 +49,12 @@ async def processData(data):
                 power_key = "command"
             else:
                 power_key = "ctrl"
-            'backspace'
             time.sleep(0.2)
-            pyautogui.keyDown('backspace')
-            pyautogui.keyDown('backspace')
-            pyautogui.keyDown('backspace')
+            #pyautogui.keyDown('backspace')
             pyautogui.keyDown(power_key)
             pyautogui.press('v')
             pyautogui.keyUp(power_key)
-            pyautogui.press('\r')
+            pyautogui.press('\n')
 
 # Play sound twice to signify that the reader is good, and load in memory
 playsound.playsound(dir_path + '/beep.wav', True)
